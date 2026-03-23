@@ -18,7 +18,7 @@ CXXFLAGS ?= -g -c \
             -DUSE_GLEW \
             -I"$(NDKDIR)"/include \
             -DFN_EXAMPLE_PLUGIN -fPIC -msse 
-CXXFLAGS += -D_GLIBCXX_USE_CXX11_ABI=0
+CXXFLAGS += -D_GLIBCXX_USE_CXX11_ABI=1
 LINKFLAGS ?=-L"$(NDKDIR)" \
 	-L./ 
 LIBS ?= -lDDImage
@@ -32,7 +32,7 @@ all: Add.so \
 %.os: %.cpp
 	$(CXX) $(CXXFLAGS) -o $(@) $<
 %.so: %.os
-	$(LINK) $(LINKFLAGS) $(LIBS) -o $(@) $<
+	$(LINK) $(LINKFLAGS) -o $(@) $< $(LIBS)
 %.a: %.cpp
 	$(CXX) $(CXXFLAGS) -o lib$(@) $<
 
