@@ -1,0 +1,5 @@
+toolb = nuke.menu('Nodes')
+toolb.addCommand('Add',"nuke.createNode('Add')")
+toolb.addCommand('AddInputs',"nuke.createNode('AddInputs')")
+toolb.addCommand('SimpleBlur',"nuke.createNode('SimpleBlur')")
+toolb.addCommand('CatoGamma',"nuke.createNode('CatoGamma')")
