@@ -30,7 +30,8 @@ all: Add.so \
 	 CatoContrast.so \
 	 CatoSharpen.so \
 	 CatoEdge.so \
-	 CatoMedian.so
+	 CatoMedian.so \
+	 CatoColorDifference.so
 
 .PRECIOUS : %.os
 %.os: %.cpp
