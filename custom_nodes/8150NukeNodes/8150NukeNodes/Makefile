@@ -26,7 +26,9 @@ LINKFLAGS += -shared
 all: Add.so \
      SimpleBlur.so \
      AddInputs.so \
-	 CatoGamma.so
+	 CatoGamma.so \
+	 CatoContrast.so \
+	 CatoSharpen.so
 
 .PRECIOUS : %.os
 %.os: %.cpp
