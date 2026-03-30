@@ -28,7 +28,9 @@ all: Add.so \
      AddInputs.so \
 	 CatoGamma.so \
 	 CatoContrast.so \
-	 CatoSharpen.so
+	 CatoSharpen.so \
+	 CatoEdge.so \
+	 CatoMedian.so
 
 .PRECIOUS : %.os
 %.os: %.cpp

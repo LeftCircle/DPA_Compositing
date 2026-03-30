@@ -3,7 +3,7 @@
 static const char* const CLASS = "CatoMedian";
 
 static const char* const HELP =
-  "Sets the pixel to the median ";
+  "Does a simple Median operation";
 
 // Standard plug-in include files.
 
@@ -14,13 +14,17 @@ using namespace DD::Image;
 #include "DDImage/Tile.h"
 #include "DDImage/Knobs.h"
 
+#include <vector>
+#include <cmath>
+
+
 using namespace std;
 
 class CatoMedian : public Iop
 {
-private:
-    int _size;
 
+  int _size;
+  
 public:
 
   int maximum_inputs() const { return 1; }
@@ -28,9 +32,12 @@ public:
   
   //! Constructor. Initialize user controls to their default values.
 
-  CatoMedian (Node* node) : Iop (node) {}
+  CatoMedian (Node* node) : Iop (node)
+  {
+    _size = 5;
+  }
 
-  ~CatoMedian () { _size = 10; }
+  ~CatoMedian () {}
   
   void _validate(bool);
   void _request(int x, int y, int r, int t, ChannelMask channels, int count);
@@ -54,7 +61,7 @@ public:
 /*! This is a function that creates an instance of the operator, and is
    needed for the Iop::Description to work.
  */
-static Iop* CatoSharpenCreate(Node* node)
+static Iop* CatoMedianCreate(Node* node)
 {
   return new CatoMedian(node);
 }
@@ -64,7 +71,7 @@ static Iop* CatoSharpenCreate(Node* node)
    0 if you do not want the operator to be visible.
  */
 const Iop::Description CatoMedian::description ( CLASS, "Merge/CatoMedian",
-                                                     CatoSharpenCreate );
+                                                     CatoMedianCreate );
 
 
 void CatoMedian::_validate(bool for_real)
@@ -99,24 +106,25 @@ void CatoMedian::engine ( int y, int x, int r,
     return;
   }
   
+
   foreach ( z, channels ) {
     float* outptr = row.writable(z) + x;
     for( int cur = x ; cur < r; cur++ ) {
-      float value = 0;
+      int n_elements = (2 * _size + 1) * (2 * _size + 1);
+      std::vector<float> vals(n_elements, INFINITY);
+      int n_vals = 0;
       if ( intersect( tile.channels(), z ) ) {  
-        // a simple sharpen
-        int kernel_idx = 0;
-        int x_idx = 0;
-        int y_idx = 0;
-        for ( int px = -_size; px < _size; px++ ) {
-          for ( int py = -_size; py < _size; py++ ) { 
-            kernel_idx = y_idx * _size + x_idx;  
-            value += tile[z][ tile.clampy(y + py)][ tile.clampx(cur + px) ] * _sharpen_filter[kernel_idx];
-            x_idx++; y_idx++;
+        // a simple box blur
+        for ( int px = -_size; px <= _size; px++ ) {
+          for ( int py = -_size; py <= _size; py++ ) { 
+            int idx = (py + _size) * (2 * _size + 1) + (px + _size);
+            vals[idx] = tile[z][ tile.clampy(y + py)][ tile.clampx(cur + px) ];
+            n_vals++;
           }
         }
       }
-      *outptr++ = value;
+      *outptr++ = vals[n_vals / 2];
+      n_vals = 0;
     }
   }
 }

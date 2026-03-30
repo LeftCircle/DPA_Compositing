@@ -1,9 +1,9 @@
 // Copyright (c) 2009 The Foundry Visionmongers Ltd.  All Rights Reserved.
 
-static const char* const CLASS = "CatoSharpen";
+static const char* const CLASS = "CatoEdge";
 
 static const char* const HELP =
-  "Sharpens the image";
+  "Basic Edge Detection";
 
 // Standard plug-in include files.
 
@@ -16,13 +16,13 @@ using namespace DD::Image;
 
 using namespace std;
 
-class CatoSharpen : public Iop
+class CatoEdge : public Iop
 {
 private:
     int _size = 1; // We are only sharpening based on immediate neighbors
-    double _sharpen_filter[9] = {
+    double _filter[9] = {
         -1.0, -1.0, -1.0,
-        -1.0,  9.0, -1.0,
+        -1.0,  8.0, -1.0,
         -1.0, -1.0, -1.0
     };
 
@@ -33,9 +33,9 @@ public:
   
   //! Constructor. Initialize user controls to their default values.
 
-  CatoSharpen (Node* node) : Iop (node) {}
+  CatoEdge (Node* node) : Iop (node) {}
 
-  ~CatoSharpen () {}
+  ~CatoEdge () {}
   
   void _validate(bool);
   void _request(int x, int y, int r, int t, ChannelMask channels, int count);
@@ -59,27 +59,27 @@ public:
 /*! This is a function that creates an instance of the operator, and is
    needed for the Iop::Description to work.
  */
-static Iop* CatoSharpenCreate(Node* node)
+static Iop* CatoEdgeCreate(Node* node)
 {
-  return new CatoSharpen(node);
+  return new CatoEdge(node);
 }
 
 /*! The Iop::Description is how NUKE knows what the name of the operator is,
    how to create one, and the menu item to show the user. The menu item may be
    0 if you do not want the operator to be visible.
  */
-const Iop::Description CatoSharpen::description ( CLASS, "Merge/CatoSharpen",
-                                                     CatoSharpenCreate );
+const Iop::Description CatoEdge::description ( CLASS, "Merge/CatoEdge",
+                                                     CatoEdgeCreate );
 
 
-void CatoSharpen::_validate(bool for_real)
+void CatoEdge::_validate(bool for_real)
 {
   copy_info(); // copy bbox channels etc from input0, which will validate it.
   info_.pad( _size);
   
 }
 
-void CatoSharpen::_request(int x, int y, int r, int t, ChannelMask channels, int count)
+void CatoEdge::_request(int x, int y, int r, int t, ChannelMask channels, int count)
 {
   // request extra pixels around the input
   input(0)->request( x - _size , y - _size , r + _size, t + _size, channels, count );
@@ -93,7 +93,7 @@ void CatoSharpen::_request(int x, int y, int r, int t, ChannelMask channels, int
    it.
 
  */
-void CatoSharpen::engine ( int y, int x, int r,
+void CatoEdge::engine ( int y, int x, int r,
                               ChannelMask channels, Row& row )
 {
  
@@ -103,6 +103,7 @@ void CatoSharpen::engine ( int y, int x, int r,
     std::cerr << "Aborted!";
     return;
   }
+  
   foreach ( z, channels ) {
     float* outptr = row.writable(z) + x;
     for( int cur = x ; cur < r; cur++ ) {
@@ -112,8 +113,8 @@ void CatoSharpen::engine ( int y, int x, int r,
         int kernel_idx = 0;
         for ( int px = -_size; px <= _size; px++ ) {
           for ( int py = -_size; py <= _size; py++ ) { 
-            kernel_idx = (py + _size) * (2 * _size + 1) + (px + _size); 
-            value += tile[z][ tile.clampy(y + py)][ tile.clampx(cur + px) ] * _sharpen_filter[kernel_idx];
+            kernel_idx = (py + _size) * (2 * _size + 1) + (px + _size);   
+            value += tile[z][ tile.clampy(y + py)][ tile.clampx(cur + px) ] * _filter[kernel_idx];
           }
         }
       }
