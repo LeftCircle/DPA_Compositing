@@ -115,21 +115,26 @@ void CatoColorDifference::engine ( int y, int x, int r,
     float* out_alpha = row.writable(Chan_Alpha) + x;
     const float* end = outptr_b + (r - x);
 
-    float matte;
+    float matte, inverse_matte;
     while (outptr_b < end) {
         // Basic spill supression
         float spill_suppress_foreground_b = std::min(*input1_g, *input1_b);
         
-        matte = 1.0 - std::max(*input1_b - std::max(*input1_r, *input1_g), 0.0f);
-        
-        *outptr_r = matte * *input0_r + *input1_r;
-        *outptr_g = matte * *input0_g + *input1_g;
-        *outptr_b = matte * *input0_b + spill_suppress_foreground_b;
+        // inverse matte creation from original foreground
+        matte = std::max(*input1_b - std::max(*input1_r, *input1_g), 0.0f);
+        inverse_matte = 1.0 - matte;
 
+        // So this feels wrong but it still works for some reason?        
+        *outptr_r = matte * *input0_r + inverse_matte * *input1_r;
+        *outptr_g = matte * *input0_g + inverse_matte * *input1_g;
+        *outptr_b = matte * *input0_b + inverse_matte * spill_suppress_foreground_b;
+        
+        //*out_alpha = matte;
 
         input1_r++; input1_g++; input1_b++;
         input0_r++; input0_g++; input0_b++;
-        outptr_b++; out_alpha++; outptr_g++; outptr_r++;
+        outptr_b++; outptr_g++; outptr_r++;
+        //out_alpha++;
     }
   //}
 }
