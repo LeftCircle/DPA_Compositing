@@ -12,7 +12,7 @@ This project was an introduction to creating custom nodes for Nuke.
 ## Cato Nodes
 The following images were used as test photos:
 - ![will and pom](images/will_and_pomg.jpg)
-- <img src="images/will_and_pomg.jpg" alt="will and pom" width="200>
+- <img src="images/will_and_pomg.jpg" alt="will and pom" width="200">
 - ![test smiley](images/test_photo.png)
 - ![hollow knight](images/hk_png.png)
 
