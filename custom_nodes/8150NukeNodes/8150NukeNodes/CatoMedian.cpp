@@ -16,6 +16,7 @@ using namespace DD::Image;
 
 #include <vector>
 #include <cmath>
+#include <algorithm>
 
 
 using namespace std;
@@ -34,7 +35,7 @@ public:
 
   CatoMedian (Node* node) : Iop (node)
   {
-    _size = 5;
+    _size = 20;
   }
 
   ~CatoMedian () {}
@@ -123,6 +124,7 @@ void CatoMedian::engine ( int y, int x, int r,
           }
         }
       }
+      std::sort(vals.begin(), vals.end());
       *outptr++ = vals[n_vals / 2];
       n_vals = 0;
     }
