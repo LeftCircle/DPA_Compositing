@@ -21,7 +21,6 @@ The following images were used as test photos:
 - Inputs: 2
 - Results:
 	- <img src="images/color_difference_result.png" alt="Color difference result" width="200">
-	- <img src="images/test_photo.png" alt="Test photo" width="200">
 - Notes:
 	- This node places a foreground image onto a background by creating a matte based on the difference in colors of the foreground image and the background. The current implementation works only for a blue background, but could be modified to work for either blue or green backgrounds. 
     - Spill suppression is achieved on the foreground image (input 1), by creating a spill supressed blue which is the min of the blue and green channel of each pixel in the foreground image. 
@@ -44,7 +43,6 @@ The following images were used as test photos:
 - Results:
 	- <img src="images/ContrastSlider.png" alt="Contrast slider" width="200">
 	- <img src="images/contrast_result.png" alt="Contrast result" width="200">
-	- <img src="images/test_photo.png" alt="Test photo" width="200">
 - Notes:
 	- Very simple. Just `*outptr++ = mult * *inptr++ - subtract;`
 
@@ -55,7 +53,6 @@ The following images were used as test photos:
 - Results:
 	- <img src="images/edge_result.png" alt="Edge result" width="200">
 	- <img src="images/edge_result_better.png" alt="Edge result (alternate)" width="200">
-	- <img src="images/test_photo.png" alt="Test photo" width="200">
 - Notes:
 	- This is a really simple edge detection with the filer.
     ```
@@ -76,7 +73,6 @@ The following images were used as test photos:
 	- <img src="images/GammaSlider.png" alt="Gamma slider" width="200">
 	- <img src="images/gamma_result_small.png" alt="Gamma result (small)" width="200">
 	- <img src="images/gamma_result_large.png" alt="Gamma result (large)" width="200">
-	- <img src="images/test_photo.png" alt="Test photo" width="200">
 - Notes:
 	- `*outptr++ = pow(*inptr++, gamma);`
 
@@ -86,20 +82,9 @@ The following images were used as test photos:
 - Inputs: 1
 - Results:
 	- <img src="images/edian_result.png" alt="Median result" width="200">
-	- <img src="images/test_photo.png" alt="Test photo" width="200">
-- Notes:
-	- Confirm whether `edian_result.png` should be renamed to `median_result.png`.
-	- Document the kernel size behavior.
-
-### CatoOver
-
-- Purpose: composits one image over another.
-- Inputs: 2
-- Results:
-	- <img src="images/hk_png.png" alt="Foreground/background source image" width="200">
-	- <img src="images/will_and_pomg.jpg" alt="Foreground/background source image" width="200">
 - Notes:
 	- Gathers all of the values within a Tile of size 20, sorts them, then grabs the median value. 
+	
 
 ### CatoSharpen
 
@@ -107,7 +92,6 @@ The following images were used as test photos:
 - Inputs: 1
 - Results:
 	- <img src="images/sharpen_result.png" alt="Sharpen result" width="200">
-	- <img src="images/test_photo.png" alt="Test photo" width="200">
 - Notes:
 	- Just like the edge detect except the filter is:
     ```
